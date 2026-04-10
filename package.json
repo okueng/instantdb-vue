@@ -1,6 +1,6 @@
 {
   "name": "@okueng/instantdb-vue",
-  "version": "0.9.3",
+  "version": "1.0.0",
   "description": "Unofficial Instant DB for Vue",
   "author": "okueng",
   "license": "ISC",
@@ -47,7 +47,7 @@
     "update": "npm i @instantdb/core@latest"
   },
   "dependencies": {
-    "@instantdb/core": "^0.22.84",
+    "@instantdb/core": "^1.0.0",
     "eventsource": "^4.1.0"
   },
   "peerDependencies": {

@@ -7,12 +7,14 @@ import {
   tx,
   lookup,
   i,
+  // error
   InstantAPIError,
+  // sync table enums
   SyncTableCallbackEventType,
-  StorageInterface,
+  StoreInterface,
+  createInstantRouteHandler,
 } from "@instantdb/core";
 import type {
-  Config,
   QueryResponse,
   InstantQuery,
   InstantQueryResult,
@@ -22,14 +24,14 @@ import type {
   InstantSchemaDatabase,
   InstantUnknownSchemaDef,
   IInstantDatabase,
-  IDatabase,
   User,
   AuthState,
   Query,
   InstaQLParams,
-  InstaQLQueryParams,
   ConnectionStatus,
   ValidQuery,
+  // presence types
+  PresencePeer,
   // schema types
   AttrsDefs,
   CardinalityKind,
@@ -72,18 +74,10 @@ import type {
   FileOpts,
   UploadFileResponse,
   DeleteFileResponse,
-  StorageInterfaceStoreName,
-  // presence types
-  PresencePeer,
-  PresenceSlice,
-  // attr types
-  InstantDBAttr,
-  InstantDBAttrOnDelete,
-  InstantDBCheckedDataType,
-  InstantDBIdent,
-  InstantDBInferredType,
-  // SSE types
-  EventSourceType,
+  // stream types
+  CreateReadStreamOpts,
+  CreateWriteStreamOpts,
+  InstantWritableStream,
   // sync table types
   SyncTableCallback,
   SyncTableCallbackEvent,
@@ -92,42 +86,40 @@ import type {
   SyncTableSyncTransaction,
   SyncTableLoadFromStorage,
   SyncTableSetupError,
+  StoreInterfaceStoreName,
+  // SSE types
+  EventSourceType,
   // error types
   InstantIssue,
+  // presence types
+  PresenceSlice,
 } from "@instantdb/core";
 
 import InstantVueWebDatabase from "./InstantVueWebDatabase";
 import InstantVueAbstractDatabase from "./InstantVueAbstractDatabase";
-import { init, init_experimental } from "./init";
+import { init } from "./init";
 import type { InstantConfig } from "./init";
 import type { CursorSchema } from "./components";
-
-/**
- * @deprecated
- * Use `InstantVueWebDatabase`
- */
-const InstantVueDatabase = InstantVueWebDatabase;
 
 export {
   id,
   tx,
   lookup,
   init,
-  init_experimental,
   InstantVueWebDatabase,
-  InstantVueDatabase,
   i,
-  // internal
-  InstantVueAbstractDatabase,
   // error
   InstantAPIError,
-  // sync table
+  // internal
+  InstantVueAbstractDatabase,
+  // sync table enums
   SyncTableCallbackEventType,
-  // storage interface
-  StorageInterface,
+  // custom store
+  StoreInterface,
+  // Server helper
+  createInstantRouteHandler,
 };
 export type {
-  Config,
   InstantConfig,
   InstantUnknownSchemaDef,
   Query,
@@ -142,11 +134,12 @@ export type {
   InstantEntity,
   InstantSchemaDatabase,
   IInstantDatabase,
-  IDatabase,
   InstaQLParams,
-  InstaQLQueryParams,
   ValidQuery,
   InstaQLFields,
+  // presence types
+  PresencePeer,
+  PresenceSlice,
   // schema types
   AttrsDefs,
   CardinalityKind,
@@ -188,16 +181,12 @@ export type {
   FileOpts,
   UploadFileResponse,
   DeleteFileResponse,
-  StorageInterfaceStoreName,
-  // presence types
-  PresencePeer,
-  PresenceSlice,
-  // attr types
-  InstantDBAttr,
-  InstantDBAttrOnDelete,
-  InstantDBCheckedDataType,
-  InstantDBIdent,
-  InstantDBInferredType,
+  // stream types
+  CreateReadStreamOpts,
+  CreateWriteStreamOpts,
+  InstantWritableStream,
+  // custom store
+  StoreInterfaceStoreName,
   // SSE types
   EventSourceType,
   // sync table types

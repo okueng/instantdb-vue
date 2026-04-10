@@ -5,11 +5,12 @@
 <script
   setup
   lang="ts"
-  generic="RoomSchema extends RoomSchemaShape, RoomType extends keyof RoomSchema"
+  generic="RoomSchema extends RoomSchemaShape, RoomType extends string & keyof RoomSchema"
 >
 import type * as CSS from "csstype";
 import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
-import { InstantVueRoom } from "../InstantVueRoom";
+import type { CSSProperties } from "vue";
+import { InstantVueRoom, rooms } from "../InstantVueRoom";
 import type { RoomSchemaShape } from "@instantdb/core";
 import type { CursorSchema } from ".";
 import Cursor from "./Cursor.vue";
@@ -29,7 +30,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{ error: [value: string] }>();
 
-const absStyles: CSS.Properties = {
+const absStyles: CSSProperties = {
   position: "absolute",
   top: 0,
   left: 0,
@@ -37,7 +38,7 @@ const absStyles: CSS.Properties = {
   right: 0,
 };
 
-const inertStyles: CSS.Properties = {
+const inertStyles: CSSProperties = {
   overflow: "hidden",
   pointerEvents: "none",
   userSelect: "none",
@@ -61,9 +62,7 @@ const usePresenceOptions = computed(() => {
   };
 });
 
-// react sdk still does not use db.rooms
-// see https://github.com/instantdb/instant/blob/main/client/packages/react/src/Cursors.tsx
-const cursorsPresence = room.usePresence(usePresenceOptions);
+const cursorsPresence = rooms.usePresence(room, usePresenceOptions);
 
 const isLoadingFirst = ref(true);
 watchEffect(() => {
@@ -79,9 +78,7 @@ watchEffect(() => {
   }
 });
 
-// react sdk still does not use db.rooms
-// see https://github.com/instantdb/instant/blob/main/client/packages/react/src/Cursors.tsx
-const fullPresence = room.usePresence();
+const fullPresence = rooms.usePresence(room);
 
 function getCursor(presence: (typeof cursorsPresence.peers.value)[string]) {
   return presence[spaceId.value] as Pick<
@@ -141,6 +138,7 @@ function onTouchMove(e: TouchEvent) {
   }
 
   const touch = e.touches[0];
+  if (!touch) return;
 
   if (touch.target instanceof Element) {
     if (!propagate) {

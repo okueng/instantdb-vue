@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@instantdb/core':
-        specifier: ^0.22.84
-        version: 0.22.84
+        specifier: ^1.0.0
+        version: 1.0.0
       eventsource:
         specifier: ^4.1.0
         version: 4.1.0
@@ -213,11 +213,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@instantdb/core@0.22.84':
-    resolution: {integrity: sha512-lvuf263AsjR6vLNPGiiai2qlwfDCQsBa/aC2TFG+TL/VoE+loG8o3rQ0Fzi52Qq8BDj8VQ+KZAdVEUBQgAmB8w==}
+  '@instantdb/core@1.0.0':
+    resolution: {integrity: sha512-o9gklfQDcKS0U+SdZsfByxkYpZPKOrNMuHgY7kDYo/u6gY1BlP3BAaq3pnTpgCfHG0JvQAln9dmot3XJjtB+8g==}
 
-  '@instantdb/version@0.22.84':
-    resolution: {integrity: sha512-NwdsHnwflUw/jOEQqMI0CT3YXPNbg5weCOgqvtZaUU2YG+eMJk4lwz/1++EoWzUwYIuQvM1Pa0cw8nRkJUG3KA==}
+  '@instantdb/version@1.0.0':
+    resolution: {integrity: sha512-N3oiGeVbYmDh1exBQE473U9yQsxIpkqplXI+1LY7ZZg71E7V7j89HAL2C+WSCwmvAUY5RoQXO7soiWXhB7OvSQ==}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -1132,13 +1132,13 @@ snapshots:
   '@esbuild/win32-x64@0.25.12':
     optional: true
 
-  '@instantdb/core@0.22.84':
+  '@instantdb/core@1.0.0':
     dependencies:
-      '@instantdb/version': 0.22.84
+      '@instantdb/version': 1.0.0
       mutative: 1.3.0
       uuid: 11.1.0
 
-  '@instantdb/version@0.22.84': {}
+  '@instantdb/version@1.0.0': {}
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 

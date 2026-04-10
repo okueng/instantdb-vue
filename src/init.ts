@@ -19,15 +19,10 @@ type ExtraConfig = {
   __extra_vue?: Partial<Extra>;
 };
 
-type DeprecatedExtraConfig = Partial<{
-  /** @deprecated use __extra_vue.clientOnlyUseQuery instead */
-  clientOnlyUseQuery: boolean;
-}>;
-
 export type InstantConfig<
   S extends InstantSchemaDef<any, any, any>,
   UseDates extends boolean = false
-> = OriginalInstantConfig<S, UseDates> & ExtraConfig & DeprecatedExtraConfig;
+> = OriginalInstantConfig<S, UseDates> & ExtraConfig;
 
 /**
  *
@@ -90,18 +85,3 @@ export function init<
   });
 }
 
-/**
- * @deprecated
- * `init_experimental` is deprecated. You can replace it with `init`.
- *
- * @example
- *
- * // Before
- * import { init_experimental } from "@okueng/instantdb-vue"
- * const db = init_experimental({  ...  });
- *
- * // After
- * import { init } from "@okueng/instantdb-vue"
- * const db = init({ ...  });
- */
-export const init_experimental = init;

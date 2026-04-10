@@ -24,8 +24,11 @@ import type {
   IInstantDatabase,
   ValidQuery,
 } from "@instantdb/core";
-import { useQueryInternal } from "./useQuery";
-import type { UseQueryInternalReturn } from "./useQuery";
+import { useQueryInternal, type UseQueryInternalReturn } from "./useQuery";
+import {
+  useInfiniteQuerySubscription,
+  type InfiniteQueryResult,
+} from "./useInfiniteQuerySubscription";
 import {
   computed,
   onMounted,
@@ -58,10 +61,7 @@ export default abstract class InstantVueAbstractDatabase<
   public storage: Storage;
   public core: InstantCoreDatabase<Schema, UseDates>;
 
-  /** @deprecated use `core` instead */
-  public _core: InstantCoreDatabase<Schema, UseDates>;
-
-  static Storage?: any;
+  static Store?: any;
   static NetworkListener?: any;
   static EventSourceImpl?: any;
 
@@ -75,29 +75,21 @@ export default abstract class InstantVueAbstractDatabase<
   ) {
     const { __extra_vue, ..._config } = config;
 
-    if (_config.clientOnlyUseQuery) {
-      console.warn(
-        `clientOnlyUseQuery is deprecated. use __extra_vue.clientOnlyUseQuery`
-      );
-    }
-
     this.core = core_init<Schema, UseDates>(
       _config,
       // @ts-expect-error because TS can't resolve subclass statics
-      this.constructor.Storage,
+      config.Store || this.constructor.Store,
       // @ts-expect-error because TS can't resolve subclass statics
       this.constructor.NetworkListener,
       versions,
       // @ts-expect-error because TS can't resolve subclass statics
-      this.constructor.EventSourceImpl
+      this.constructor.EventSourceImpl,
     );
-    this._core = this.core;
     this.auth = this.core.auth;
     this.storage = this.core.storage;
     // @ts-expect-error because TS can't resolve subclass statics
     this.constructor.extra = {
-      clientOnlyUseQuery:
-        !!__extra_vue?.clientOnlyUseQuery || !!_config.clientOnlyUseQuery,
+      clientOnlyUseQuery: !!__extra_vue?.clientOnlyUseQuery,
       stopLoadingOnNullQuery: !!__extra_vue?.stopLoadingOnNullQuery,
     } satisfies Extra;
   }
@@ -164,7 +156,7 @@ export default abstract class InstantVueAbstractDatabase<
    *  const room = db.room('chat', roomId);
    *  const { peers } = db.rooms.usePresence(room);
    */
-  room<RoomType extends keyof Rooms>(
+  room<RoomType extends string & keyof Rooms>(
     type?: MaybeRefOrGetter<RoomType | undefined>,
     id?: MaybeRefOrGetter<string | undefined>
   ) {
@@ -246,7 +238,7 @@ export default abstract class InstantVueAbstractDatabase<
   useQuery = <Q extends ValidQuery<Q, Schema>>(
     query: MaybeRefOrGetter<null | Q>,
     opts?: MaybeRefOrGetter<InstaQLOptions | null>
-  ): UseQueryInternalReturn<Schema, Q, UseDates> => {
+  ): UseQueryInternalReturn<Schema, Q, Config["useDateObjects"]> => {
     return useQueryInternal<Q, Schema, UseDates>(
       this.core,
       query,
@@ -402,6 +394,41 @@ export default abstract class InstantVueAbstractDatabase<
     pageInfo: PageInfoResponse<Q>;
   }> => {
     return this.core.queryOnce(query, opts);
+  };
+
+  /**
+   * Subscribe to a query and incrementally load more items
+   *
+   * Only one top level namespace in the query is allowed.
+   *
+   * Changing the query or options while the subscription is active will
+   * reset the subscription and start over with new data.
+   * @example
+   * const {
+   *   data,
+   *   loadNextPage,
+   *   canLoadNextPage,
+   * } = db.useInfiniteQuery({
+   *   posts: {
+   *     $: {
+   *       limit: 20,   // Load 20 posts at a time
+   *       order: {
+   *         createdAt: 'desc',
+   *       },
+   *     },
+   *   },
+   * });
+   */
+  useInfiniteQuery = <Q extends ValidQuery<Q, Schema>>(
+    query: MaybeRefOrGetter<Q>,
+    opts?: MaybeRefOrGetter<InstaQLOptions | undefined>,
+  ): InfiniteQueryResult<Schema, Q, UseDates> => {
+    const result = useInfiniteQuerySubscription<Schema, Q, UseDates>({
+      core: this.core,
+      query: query,
+      opts,
+    });
+    return result;
   };
 
   /**
